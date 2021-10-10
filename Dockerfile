@@ -2,7 +2,7 @@ FROM openjdk:8-alpine
 
 WORKDIR /app
 
-ADD https://github.com/taniman/profit-trailer/releases/download/2.5.0/ProfitTrailer-2.5.0.zip /app
+ADD https://github.com/taniman/profit-trailer/releases/download/2.5.1/ProfitTrailer-2.5.1.zip /app
 COPY run-profit-trailer.sh /run-profit-trailer.sh
 
 VOLUME /app/ProfitTrailer/data

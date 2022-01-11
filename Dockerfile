@@ -2,10 +2,10 @@ FROM openjdk:8-alpine
 
 WORKDIR /app
 
-ADD https://github.com/taniman/profit-trailer/releases/download/2.5.3/ProfitTrailer-2.5.3.zip /app
+ADD https://github.com/taniman/profit-trailer/releases/download/2.5.6/ProfitTrailer-2.5.6.zip /app
 
-RUN unzip -jqd /app /app/ProfitTrailer-2.5.3.zip ProfitTrailer-2.5.3/ProfitTrailer.jar && \
-    rm /app/ProfitTrailer-2.5.3.zip
+RUN unzip -jqd /app /app/ProfitTrailer-2.5.6.zip ProfitTrailer-2.5.6/ProfitTrailer.jar && \
+    rm /app/ProfitTrailer-2.5.6.zip
 
 VOLUME [ "/app/data", "/app/logs" ]
 EXPOSE 8081

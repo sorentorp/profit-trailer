@@ -11,7 +11,8 @@ For more information about ProfitTrailer :
 
  - Official website : https://profittrailer.com
  - Wiki : https://wiki.profittrailer.io
- - Github : https://github.com/taniman/profit-trailer
+ - Github : https://github.com/dodancs/profit-trailer
+ - Docker Hub : https://hub.docker.com/r/dodancs/profit-trailer
 
 Usage
 -----

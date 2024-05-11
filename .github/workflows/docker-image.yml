@@ -1,0 +1,54 @@
+on:
+  schedule:
+    - cron:  '0 10 * * *'
+jobs:
+
+  check-commit-build-new-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REPO_SCOPED_TOKEN }}
+          
+      - name: Fetch release version of ProfitTrailer
+        id: remote-check
+        run: |
+          echo ::set-output name=remote_tag_ver::$(curl -s -H 'Accept: application/vnd.github.v3+json' 'https://api.github.com/repos/taniman/profit-trailer/releases' | jq -r '.[0].tag_name')
+          
+      - name: Check if we already have this version
+        id: local-check
+        run: |
+          echo ::set-output name=exists::$([ -z "`git tag -l | grep ^${{ steps.remote-check.outputs.remote_tag_ver }}$`" ] && echo "false" || echo "true")
+        
+      - name: Tag latest release version
+        if: steps.local-check.outputs.exists == 'false'
+        run: |
+          git tag ${{ steps.remote-check.outputs.remote_tag_ver }}
+          git push --tags
+
+      - name: Build the Docker image
+        run: |
+          docker build . --file Dockerfile --build-arg PT_VER=${{ steps.remote-check.outputs.remote_tag_ver }} --tag dodancs/profit-trailer:${{ steps.remote-check.outputs.remote_tag_ver }}
+          docker tag dodancs/profit-trailer:${{ steps.remote-check.outputs.remote_tag_ver }} dodancs/profit-trailer:latest
+          docker tag dodancs/profit-trailer:${{ steps.remote-check.outputs.remote_tag_ver }} ghcr.io/dodancs/profit-trailer:${{ steps.remote-check.outputs.remote_tag_ver }}
+          docker tag dodancs/profit-trailer:${{ steps.remote-check.outputs.remote_tag_ver }} ghcr.io/dodancs/profit-trailer:latest
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Log in to the ghcr.io
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    
+      - name: Push the Docker images
+        run: |
+          docker push dodancs/profit-trailer:${{ steps.remote-check.outputs.remote_tag_ver }}
+          docker push dodancs/profit-trailer:latest
+          docker push ghcr.io/dodancs/profit-trailer:${{ steps.remote-check.outputs.remote_tag_ver }}
+          docker push ghcr.io/dodancs/profit-trailer:latest

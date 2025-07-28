@@ -1,6 +1,6 @@
 FROM openjdk:8-alpine
 
-ARG PT_VER=2.5.56
+ARG PT_VER=2.5.70
 
 WORKDIR /app
 

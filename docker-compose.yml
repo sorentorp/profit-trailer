@@ -9,7 +9,6 @@ services:
     volumes:
       - ./data/:/app/data
       - ./logs/:/app/logs
-      - ./app/:/app
 
 volumes:
   mybot_data:

@@ -7,8 +7,8 @@ services:
     ports:
       - "8081:8081/tcp"
     volumes:
-      - 'mybot_data:/app/data'
-      - 'mybot_logs:/app/logs'
+      - ./data/:/app/data
+      - ./logs/:/app/logs
 
 volumes:
   mybot_data:
